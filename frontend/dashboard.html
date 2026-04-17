@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinanceFlow India — Dashboard</title>
+  <meta name="description" content="Track your income, expenses, and budgets with FinanceFlow India." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon"><i class="fas fa-rupee-sign"></i></div>
+        <span class="sidebar-logo-text">FinanceFlow</span>
+      </div>
+      <button class="sidebar-close" id="sidebar-close" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-link active" data-screen="dashboard" onclick="showScreen('dashboard',this)">
+        <i class="fas fa-th-large"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-link" data-screen="analytics" onclick="showScreen('analytics',this)">
+        <i class="fas fa-chart-bar"></i>
+        <span>Analytics</span>
+      </a>
+      <a href="#" class="nav-link" data-screen="budget" onclick="showScreen('budget',this)">
+        <i class="fas fa-wallet"></i>
+        <span>Budget</span>
+      </a>
+      <a href="#" class="nav-link" data-screen="alerts" onclick="showScreen('alerts',this)">
+        <i class="fas fa-bell"></i>
+        <span>Alerts</span>
+        <span class="nav-badge" id="alert-badge" style="display:none;"></span>
+      </a>
+      <a href="#" class="nav-link" data-screen="settings" onclick="showScreen('settings',this)">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-mini">
+        <div class="user-avatar" id="sidebar-avatar">R</div>
+        <div class="user-mini-info">
+          <div class="user-mini-name" id="sidebar-name">Loading...</div>
+          <div class="user-mini-email" id="sidebar-email">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" id="menu-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="month-selector">
+          <button class="month-btn" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+          <span class="month-label" id="month-label">April 2026</span>
+          <button class="month-btn" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <button class="icon-btn" onclick="showScreen('alerts', document.querySelector('[data-screen=alerts]'))">
+          <i class="fas fa-bell"></i>
+          <span class="icon-btn-badge" id="topbar-alert-badge" style="display:none;"></span>
+        </button>
+        <div class="topbar-user">
+          <div class="topbar-avatar" id="topbar-avatar">R</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== SCREENS ===== -->
+    <div class="screens-wrapper">
+
+      <!-- DASHBOARD SCREEN -->
+      <section class="screen active" id="screen-dashboard">
+        <div class="hero-card">
+          <div class="hero-card-bg"></div>
+          <div class="hero-content">
+            <div class="hero-greeting">
+              <div class="hero-greeting-text">Welcome back 👋</div>
+              <div class="hero-name" id="hero-name">Loading...</div>
+            </div>
+            <div class="hero-balance">
+              <div class="hero-balance-label">Total Balance</div>
+              <div class="hero-balance-amount" id="hero-balance">₹0</div>
+            </div>
+          </div>
+          <div class="hero-orb hero-orb-1"></div>
+          <div class="hero-orb hero-orb-2"></div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-card income-card">
+            <div class="summary-card-icon"><i class="fas fa-arrow-down"></i></div>
+            <div class="summary-card-info">
+              <div class="summary-card-label">Income</div>
+              <div class="summary-card-value" id="dash-income">₹0</div>
+            </div>
+          </div>
+          <div class="summary-card expense-card">
+            <div class="summary-card-icon"><i class="fas fa-arrow-up"></i></div>
+            <div class="summary-card-info">
+              <div class="summary-card-label">Expenses</div>
+              <div class="summary-card-value" id="dash-expenses">₹0</div>
+            </div>
+          </div>
+          <div class="summary-card budget-card">
+            <div class="summary-card-icon"><i class="fas fa-wallet"></i></div>
+            <div class="summary-card-info">
+              <div class="summary-card-label">Budget Set</div>
+              <div class="summary-card-value" id="dash-budget">₹0</div>
+            </div>
+          </div>
+          <div class="summary-card savings-card">
+            <div class="summary-card-icon"><i class="fas fa-piggy-bank"></i></div>
+            <div class="summary-card-info">
+              <div class="summary-card-label">Savings</div>
+              <div class="summary-card-value" id="dash-savings">₹0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header">
+            <h3 class="section-card-title">Recent Transactions</h3>
+          </div>
+          <div class="transactions-list" id="recent-transactions">
+            <div class="empty-state"><i class="fas fa-receipt"></i><p>No transactions yet.<br/>Add one using the + button below.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ANALYTICS SCREEN -->
+      <section class="screen" id="screen-analytics">
+        <div class="analytics-grid">
+          <div class="section-card span-full">
+            <div class="section-card-header">
+              <h3 class="section-card-title">Income vs Expenses — Last 6 Months</h3>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="trend-chart" height="280"></canvas>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-card-header">
+              <h3 class="section-card-title">Spending by Category</h3>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="category-chart" height="260"></canvas>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-card-header">
+              <h3 class="section-card-title">Category Breakdown</h3>
+            </div>
+            <div id="category-table" class="category-table">
+              <div class="empty-state"><i class="fas fa-chart-pie"></i><p>No spending data for this month.</p></div>
+            </div>
+            <div class="analytics-summary" id="analytics-summary">
+              <div class="as-row">
+                <span>Income This Month</span>
+                <span class="as-val success" id="an-income">₹0</span>
+              </div>
+              <div class="as-row">
+                <span>Total Expenses</span>
+                <span class="as-val danger" id="an-expenses">₹0</span>
+              </div>
+              <div class="as-row">
+                <span>Net Savings</span>
+                <span class="as-val primary" id="an-savings">₹0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BUDGET SCREEN -->
+      <section class="screen" id="screen-budget">
+        <div class="section-card">
+          <div class="section-card-header">
+            <h3 class="section-card-title">Budget Status</h3>
+            <button class="btn-outline" onclick="openBudgetModal()"><i class="fas fa-plus"></i> Set Budget</button>
+          </div>
+          <div id="budget-alert-bar"></div>
+          <div id="budget-list">
+            <div class="empty-state"><i class="fas fa-wallet"></i><p>No budgets set yet.<br/>Click "Set Budget" to get started.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ALERTS SCREEN -->
+      <section class="screen" id="screen-alerts">
+        <div class="section-card">
+          <div class="section-card-header">
+            <h3 class="section-card-title">Alerts &amp; Notifications</h3>
+          </div>
+          <div id="alerts-list">
+            <div class="empty-state"><i class="fas fa-bell-slash"></i><p>No alerts. You're on track! 🎉</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS SCREEN -->
+      <section class="screen" id="screen-settings">
+        <div class="settings-grid">
+          <div class="section-card">
+            <div class="section-card-header">
+              <h3 class="section-card-title"><i class="fas fa-user-circle"></i> Profile Settings</h3>
+            </div>
+            <div id="profile-msg" class="form-alert" style="display:none;"></div>
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" id="s-name" class="form-input" placeholder="Your full name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" id="s-email" class="form-input" placeholder="your@email.com" />
+            </div>
+            <button class="btn-primary" onclick="saveProfile()" style="width:auto;padding:10px 24px;">
+              <span>Save Changes</span>
+            </button>
+          </div>
+
+          <div class="section-card">
+            <div class="section-card-header">
+              <h3 class="section-card-title"><i class="fas fa-lock"></i> Change Password</h3>
+            </div>
+            <div id="pw-msg" class="form-alert" style="display:none;"></div>
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <input type="password" id="s-curr-pw" class="form-input" placeholder="Current password" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" id="s-new-pw" class="form-input" placeholder="Min. 6 characters" />
+            </div>
+            <button class="btn-primary" onclick="changePassword()" style="width:auto;padding:10px 24px;">
+              <span>Update Password</span>
+            </button>
+          </div>
+
+          <div class="section-card span-full">
+            <div class="section-card-header">
+              <h3 class="section-card-title"><i class="fas fa-bell"></i> Notification Preferences</h3>
+            </div>
+            <div class="notif-list">
+              <div class="notif-row">
+                <div class="notif-info">
+                  <div class="notif-title">Budget Alerts</div>
+                  <div class="notif-desc">Get notified when you exceed a category budget</div>
+                </div>
+                <div class="toggle-switch" id="tog-budget" onclick="toggleNotif('budgetAlerts','tog-budget')">
+                  <div class="toggle-knob"></div>
+                </div>
+              </div>
+              <div class="notif-row">
+                <div class="notif-info">
+                  <div class="notif-title">Spending Notifications</div>
+                  <div class="notif-desc">Real-time alerts when you log a large expense</div>
+                </div>
+                <div class="toggle-switch" id="tog-spending" onclick="toggleNotif('spendingNotifs','tog-spending')">
+                  <div class="toggle-knob"></div>
+                </div>
+              </div>
+              <div class="notif-row">
+                <div class="notif-info">
+                  <div class="notif-title">Weekly Summary</div>
+                  <div class="notif-desc">Receive a weekly digest of your finances</div>
+                </div>
+                <div class="toggle-switch" id="tog-weekly" onclick="toggleNotif('weeklySummary','tog-weekly')">
+                  <div class="toggle-knob"></div>
+                </div>
+              </div>
+            </div>
+            <div class="settings-meta">
+              <div class="settings-meta-row"><span>Currency</span><span class="meta-val">INR (₹)</span></div>
+              <div class="settings-meta-row"><span>Date Format</span><span class="meta-val">DD/MM/YYYY</span></div>
+              <div class="settings-meta-row"><span>App Version</span><span class="meta-val">1.0.0</span></div>
+            </div>
+            <div style="margin-top:24px;">
+              <button class="btn-danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- end screens-wrapper -->
+  </main>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="#" class="bottom-nav-item active" data-screen="dashboard" onclick="showScreen('dashboard',this)">
+      <i class="fas fa-th-large"></i><span>Home</span>
+    </a>
+    <a href="#" class="bottom-nav-item" data-screen="analytics" onclick="showScreen('analytics',this)">
+      <i class="fas fa-chart-bar"></i><span>Analytics</span>
+    </a>
+    <a href="#" class="bottom-nav-item" data-screen="budget" onclick="showScreen('budget',this)">
+      <i class="fas fa-wallet"></i><span>Budget</span>
+    </a>
+    <a href="#" class="bottom-nav-item" data-screen="alerts" onclick="showScreen('alerts',this)">
+      <i class="fas fa-bell"></i><span>Alerts</span>
+    </a>
+    <a href="#" class="bottom-nav-item" data-screen="settings" onclick="showScreen('settings',this)">
+      <i class="fas fa-cog"></i><span>Settings</span>
+    </a>
+  </nav>
+</div><!-- end app-layout -->
+
+<!-- FAB Add Transaction -->
+<button class="fab" id="fab-btn" onclick="openTransactionModal()" title="Add Transaction">
+  <i class="fas fa-plus"></i>
+</button>
+
+<!-- ===== ADD TRANSACTION MODAL ===== -->
+<div class="modal-overlay" id="modal-transaction" onclick="closeTransactionModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Add Transaction</h3>
+      <button class="modal-close" onclick="closeTransactionModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="tx-type-toggle">
+        <button class="tx-type-btn active" id="type-expense" onclick="setTxType('expense')">
+          <i class="fas fa-arrow-up"></i> Expense
+        </button>
+        <button class="tx-type-btn" id="type-income" onclick="setTxType('income')">
+          <i class="fas fa-arrow-down"></i> Income
+        </button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Amount (₹)</label>
+        <input type="number" id="tx-amount" class="form-input" placeholder="0.00" min="1" step="0.01" />
+      </div>
+      <div class="form-group" id="cat-group">
+        <label class="form-label">Category</label>
+        <div class="cat-grid" id="cat-grid">
+          <button class="cat-btn" data-cat="Food" onclick="selectCat(this)"><span>🍛</span><small>Food</small></button>
+          <button class="cat-btn" data-cat="Travel" onclick="selectCat(this)"><span>🚕</span><small>Travel</small></button>
+          <button class="cat-btn" data-cat="Grocery" onclick="selectCat(this)"><span>🛒</span><small>Grocery</small></button>
+          <button class="cat-btn" data-cat="Utilities" onclick="selectCat(this)"><span>⚡</span><small>Utilities</small></button>
+          <button class="cat-btn" data-cat="Medical" onclick="selectCat(this)"><span>🏥</span><small>Medical</small></button>
+          <button class="cat-btn" data-cat="Education" onclick="selectCat(this)"><span>📚</span><small>Education</small></button>
+          <button class="cat-btn" data-cat="Entertainment" onclick="selectCat(this)"><span>🎬</span><small>Entertain</small></button>
+          <button class="cat-btn" data-cat="Other" onclick="selectCat(this)"><span>📌</span><small>Other</small></button>
+        </div>
+        <div id="income-cat-group" style="display:none;">
+          <div class="cat-grid">
+            <button class="cat-btn" data-cat="Salary" onclick="selectCat(this)"><span>💼</span><small>Salary</small></button>
+            <button class="cat-btn" data-cat="Other" onclick="selectCat(this)"><span>📌</span><small>Other</small></button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input type="date" id="tx-date" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description (optional)</label>
+        <input type="text" id="tx-desc" class="form-input" placeholder="Add a note..." />
+      </div>
+      <div id="tx-error" class="form-alert form-alert-error" style="display:none;"></div>
+      <button class="btn-primary" id="tx-submit-btn" onclick="submitTransaction()">
+        <span>Add Transaction</span>
+        <i class="fas fa-check"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SET BUDGET MODAL ===== -->
+<div class="modal-overlay" id="modal-budget" onclick="closeBudgetModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Set Budget Limit</h3>
+      <button class="modal-close" onclick="closeBudgetModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="budget-cat" class="form-input">
+          <option value="">Select category</option>
+          <option value="Food">🍛 Food &amp; Dining</option>
+          <option value="Travel">🚕 Travel &amp; Transport</option>
+          <option value="Grocery">🛒 Grocery Shopping</option>
+          <option value="Utilities">⚡ Utilities &amp; Bills</option>
+          <option value="Medical">🏥 Medical</option>
+          <option value="Education">📚 Education</option>
+          <option value="Entertainment">🎬 Entertainment</option>
+          <option value="Other">📌 Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Monthly Limit (₹)</label>
+        <input type="number" id="budget-limit" class="form-input" placeholder="e.g. 5000" min="1" />
+      </div>
+      <div id="budget-error" class="form-alert form-alert-error" style="display:none;"></div>
+      <button class="btn-primary" onclick="submitBudget()">
+        <span>Save Budget</span>
+        <i class="fas fa-check"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

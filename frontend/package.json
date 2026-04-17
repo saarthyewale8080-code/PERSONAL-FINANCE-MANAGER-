@@ -1,0 +1,9 @@
+{
+  "name": "financeflow-frontend",
+  "version": "1.0.0",
+  "description": "FinanceFlow India - Frontend (HTML/CSS/JS)",
+  "scripts": {
+    "dev": "npx serve . -p 3000 --cors",
+    "start": "npx serve . -p 3000 --cors"
+  }
+}
