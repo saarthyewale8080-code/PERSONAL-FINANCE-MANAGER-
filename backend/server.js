@@ -32,17 +32,18 @@ app.get('/', (req, res) => {
   res.json({ message: '🚀 FinanceFlow India API is running', version: '1.0.0' });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 API running on port ${PORT}`);
-});
-
-// Connect to MongoDB Atlas
+// Connect to MongoDB Atlas and start server
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB Atlas connected successfully');
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀 API running at http://localhost:${PORT}`);
+      console.log(`📱 Frontend at http://localhost:3000  (run: cd frontend && npm run dev)`);
+    });
   })
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err.message);
+    process.exit(1);
   });
